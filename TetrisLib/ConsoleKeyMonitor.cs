@@ -6,7 +6,7 @@ public static class ConsoleKeyMonitor
 {
     private static readonly Subject<Movement> sMovements = new();
 
-    public static IObservable<Movement> Movenents => sMovements;
+    public static IObservable<Movement> Movements => sMovements;
 
     public static void Start()
     {
