@@ -2,7 +2,7 @@ using System.Drawing;
 
 namespace TetrisLib;
 
-public static class RectangleExtensions
+internal static class RectangleExtensions
 {
     public static Rectangle Union(this Rectangle first, Rectangle second)
     {
