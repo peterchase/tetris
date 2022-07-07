@@ -5,16 +5,20 @@ namespace TetrisLib;
 public sealed class Piece
 {
     public Piece(Shape shape, Point? position = null)
+     : this(shape, position ?? new Point(0, 0), 0) { }
+
+    private Piece(Shape shape, Point position, int rotation)
     {
         Shape = shape;
-        Position = position ?? new Point(0, 0);
+        Position = position;
+        Rotation = rotation;
     }
 
     public Point Position { get; }
 
     public Shape Shape { get; }
 
-    public int Rotation { get; private set; }
+    public int Rotation { get; }
 
     public int Kind => Shape.Kind;
 
@@ -25,7 +29,7 @@ public sealed class Piece
         return Shape.Contains(point);
     }
 
-    public int RotateClockwise() => Rotation = (Rotation + 1) % 4;
+    public Piece RotateClockwise() => new(Shape, Position, (Rotation + 1) % 4);
 
-    public int RotateCounterClockwise() => Rotation = Rotation == 0 ? 3 : Rotation - 1;
+    public Piece RotateCounterClockwise() => new (Shape, Position, Rotation == 0 ? 3 : Rotation - 1);
 }
