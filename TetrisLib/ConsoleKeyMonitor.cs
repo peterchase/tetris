@@ -21,11 +21,19 @@ public static class ConsoleKeyMonitor
             switch (key)
             {
                 case ConsoleKey.LeftArrow:
-                    sMovements.OnNext(new Movement(-1));
+                    sMovements.OnNext(Movement.LeftOne);
                     break;
 
                 case ConsoleKey.RightArrow:
-                    sMovements.OnNext(new Movement(1));
+                    sMovements.OnNext(Movement.RightOne);
+                    break;
+
+                case ConsoleKey.UpArrow:
+                    sMovements.OnNext(Movement.AntiClockwise);
+                    break;
+
+                case ConsoleKey.DownArrow:
+                    sMovements.OnNext(Movement.Clockwise);
                     break;
 
                 case ConsoleKey.Q:
