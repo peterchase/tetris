@@ -18,7 +18,9 @@ internal class Program
 
         var timerCounts = Observable.Interval(TimeSpan.FromSeconds(1)).TakeUntil(finished);
 
-        var initialBoard = new Board(new Size(40, 25)); // TODO add moving piece
+        var initialMovingPiece = new Piece(StandardShapes.L42, new Point(2, 0));
+
+        var initialBoard = new Board(new Size(40, 25)) { MovingPiece = initialMovingPiece };
         var game = new Game(timerCounts, playerMoves, initialBoard, StandardRules.Instance);
 
         await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString()));
