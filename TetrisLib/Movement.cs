@@ -15,4 +15,6 @@ public readonly struct Movement
     public int Down { get; init; }
     public int Right { get; init; }
     public int RotateClockwise { get; init; }
+
+    public override string ToString() => $"({Right}, {Down}) {RotateClockwise}";
 }
