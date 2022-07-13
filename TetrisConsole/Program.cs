@@ -15,7 +15,7 @@ internal class Program
         Console.Clear();
 
         using var finished = new Subject<Unit>();
-        var playerMoves = ConsoleKeyMonitor.Movements.Finally(() => finished.OnNext(Unit.Default));
+        var playerMoves = ConsoleKeyMonitor.Moves.Finally(() => finished.OnNext(Unit.Default));
 
         var timerCounts = Observable.Interval(TimeSpan.FromMilliseconds(250)).TakeUntil(finished);
 

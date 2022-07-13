@@ -35,8 +35,7 @@ public sealed class StandardRules : IRules
         Piece prevPiece = prevBoard.MovingPiece;
         Piece movedDownPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X, prevPiece.Position.Y + 1));
 
-        if (prevBoard.FixedPieces.Any(movedDownPiece.Intersects)
-            || movedDownPiece.Boundary.Bottom == prevBoard.Size.Height - 1)
+        if (Collision(prevBoard, movedDownPiece))
         {
             Piece newMovingPiece = CreateNewMovingPiece(prevBoard);
             return prevBoard.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
@@ -47,12 +46,31 @@ public sealed class StandardRules : IRules
         return prevBoard.WithMovingPiece(movedDownPiece);
     }
 
-    private Piece CreateNewMovingPiece(Board board)
+    private static bool Collision(Board prevBoard, Piece piece)
     {
-        Shape shape = mAllShapes[mRandom.Next(mAllShapes.Length)];
-        int xRange = board.Size.Width - shape.Size.Width;
-        int x = mRandom.Next(xRange);
-        return new Piece(shape, new Point(x, 0));
+        return prevBoard.FixedPieces.Any(piece.Intersects)
+                    || piece.Boundary.Bottom == prevBoard.Size.Height - 1;
+    }
+
+    public Board VisitDrop(DropPlayEvent playEvent, Board prevBoard, Game game)
+    {
+        if (prevBoard.MovingPiece is null)
+        {
+            return prevBoard;
+        }
+
+        for (Piece piece = prevBoard.MovingPiece; ; )
+        {
+            var movedDownPiece = piece.MoveTo(new Point(piece.Position.X, piece.Position.Y + 1));
+            if (Collision(prevBoard, movedDownPiece))
+            {
+                Piece newMovingPiece = CreateNewMovingPiece(prevBoard);
+                Board boardWithDroppedPiece = prevBoard.WithMovingPiece(piece);
+                return boardWithDroppedPiece.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
+            }
+
+            piece = movedDownPiece;
+        }
     }
 
     public bool Finished(Board board, Game game)
@@ -64,5 +82,13 @@ public sealed class StandardRules : IRules
 
         // TODO: detect collision with fixed piece when moving piece is at top
         return false;
+    }
+
+    private Piece CreateNewMovingPiece(Board board)
+    {
+        Shape shape = mAllShapes[mRandom.Next(mAllShapes.Length)];
+        int xRange = board.Size.Width - shape.Size.Width;
+        int x = mRandom.Next(xRange);
+        return new Piece(shape, new Point(x, 0));
     }
 }

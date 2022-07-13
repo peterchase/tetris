@@ -4,9 +4,9 @@ namespace TetrisLib;
 
 public static class ConsoleKeyMonitor
 {
-    private static readonly Subject<Movement> sMovements = new();
+    private static readonly Subject<IPlayEvent> sMovements = new();
 
-    public static IObservable<Movement> Movements => sMovements;
+    public static IObservable<IPlayEvent> Moves => sMovements;
 
     public static void Start()
     {
@@ -21,21 +21,25 @@ public static class ConsoleKeyMonitor
             switch (key)
             {
                 case ConsoleKey.LeftArrow:
-                    sMovements.OnNext(Movement.LeftOne);
+                    sMovements.OnNext(PlayerMovePlayEvent.For(Movement.LeftOne));
                     break;
 
                 case ConsoleKey.RightArrow:
-                    sMovements.OnNext(Movement.RightOne);
+                    sMovements.OnNext(PlayerMovePlayEvent.For(Movement.RightOne));
                     break;
 
                 case ConsoleKey.UpArrow:
-                    sMovements.OnNext(Movement.AntiClockwise);
+                    sMovements.OnNext(PlayerMovePlayEvent.For(Movement.AntiClockwise));
                     break;
 
                 case ConsoleKey.DownArrow:
-                    sMovements.OnNext(Movement.Clockwise);
+                    sMovements.OnNext(PlayerMovePlayEvent.For(Movement.Clockwise));
                     break;
 
+                case ConsoleKey.D:
+                    sMovements.OnNext(DropPlayEvent.Instance);
+                    break;
+                    
                 case ConsoleKey.Q:
                     sMovements.OnCompleted();
                     return;
