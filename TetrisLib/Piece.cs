@@ -29,6 +29,8 @@ public sealed class Piece
         return Shape.Contains(point);
     }
 
+    public Piece MoveTo(Point position) => new(Shape, position, Rotation);
+    
     public Piece RotateClockwise() => new(Shape, Position, (Rotation + 1) % 4);
 
     public Piece RotateCounterClockwise() => new (Shape, Position, Rotation == 0 ? 3 : Rotation - 1);

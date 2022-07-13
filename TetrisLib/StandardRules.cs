@@ -18,7 +18,7 @@ public sealed class StandardRules : IPlayEventVisitor<Board, (Board, Game)>
 
         // TODO: checks and other kinds of move, also nicer way to apply movement
         var prevPiece = prevBoard.MovingPiece;
-        var newPiece = new Piece(prevPiece.Shape, new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y + playEvent.Movement.Down));
+        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y + playEvent.Movement.Down));
         return prevBoard.WithMovingPiece(newPiece);
     }
 
