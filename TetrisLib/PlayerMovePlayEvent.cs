@@ -2,9 +2,9 @@ namespace TetrisLib;
 
 public sealed class PlayerMovePlayEvent : IPlayEvent
 {
-    private PlayerMovePlayEvent(in Movement playerMovement) => PlayerMovement = playerMovement;
+    private PlayerMovePlayEvent(in Movement playerMovement) => Movement = playerMovement;
 
-    public Movement PlayerMovement { get; }
+    public Movement Movement { get; }
 
     public static IPlayEvent For(in Movement playerMovement) => new PlayerMovePlayEvent(playerMovement);
 

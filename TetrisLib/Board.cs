@@ -6,13 +6,13 @@ public sealed class Board
 {
     private readonly Piece[] mFixedPieces;
 
-    public Board(Rectangle size) : this(size, Array.Empty<Piece>()) { }
+    public Board(Size size) : this(size, Array.Empty<Piece>()) { }
 
-    private Board(Rectangle size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
+    private Board(Size size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
 
     public Piece? MovingPiece { get; init; }
 
-    public Rectangle Size { get; }
+    public Size Size { get; }
 
     public IReadOnlyCollection<Piece> FixedPieces => mFixedPieces;
 

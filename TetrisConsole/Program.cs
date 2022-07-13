@@ -1,4 +1,5 @@
 ﻿
+using System.Drawing;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -9,15 +10,17 @@ internal class Program
     private static async Task Main(string[] args)
     {
         ConsoleKeyMonitor.Start();
-        using var finished = new Subject<Unit>();
 
+        Console.Clear();
+
+        using var finished = new Subject<Unit>();
         var playerMoves = ConsoleKeyMonitor.Movements.Finally(() => finished.OnNext(Unit.Default));
 
         var timerCounts = Observable.Interval(TimeSpan.FromSeconds(1)).TakeUntil(finished);
 
-        var t2 = playerMoves.ForEachAsync(async m => await Console.Out.WriteLineAsync(m.ToString()));
-        var t1 = timerCounts.ForEachAsync(async c => await Console.Out.WriteLineAsync(c.ToString()));
+        var initialBoard = new Board(new Size(40, 25)); // TODO add moving piece
+        var game = new Game(timerCounts, playerMoves, initialBoard, StandardRules.Instance);
 
-        await Task.WhenAll(t1, t2);
+        await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString()));
     }
 }
