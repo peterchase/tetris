@@ -2,14 +2,11 @@ namespace TetrisLib;
 
 public sealed class PlayerMovePlayEvent : IPlayEvent
 {
-    private readonly Movement mPlayerMovement;
+    private PlayerMovePlayEvent(in Movement playerMovement) => PlayerMovement = playerMovement;
 
-    private PlayerMovePlayEvent(in Movement playerMovement) => mPlayerMovement = playerMovement;
+    public Movement PlayerMovement { get; }
 
     public static IPlayEvent For(in Movement playerMovement) => new PlayerMovePlayEvent(playerMovement);
-    
-    public Board GetNextBoard(Board board)
-    {
-        throw new NotImplementedException();
-    }
+
+    TR IPlayEvent.Accept<TR, TA>(IPlayEventVisitor<TR, TA> visitor, TA arg) => visitor.VisitPlayerMove(this, arg);
 }

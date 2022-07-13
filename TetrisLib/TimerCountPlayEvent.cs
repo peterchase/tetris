@@ -2,14 +2,11 @@ namespace TetrisLib;
 
 public sealed class TimerCountPlayEvent : IPlayEvent
 {
-    private readonly long mTimerCount;
+    private TimerCountPlayEvent(long timerCount) => TimerCount = timerCount;
 
-    private TimerCountPlayEvent(long timerCount) => mTimerCount = timerCount;
+    public long TimerCount { get; }
 
     public static IPlayEvent For(long timerCount) => new TimerCountPlayEvent(timerCount);
-    
-    public Board GetNextBoard(Board board)
-    {
-        throw new NotImplementedException();
-    }
+
+    TR IPlayEvent.Accept<TR, TA>(IPlayEventVisitor<TR, TA> visitor, TA arg) => visitor.VisitTimerCount(this, arg);
 }
