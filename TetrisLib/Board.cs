@@ -6,11 +6,13 @@ public sealed class Board
 {
     private readonly Piece[] mFixedPieces;
 
-    public Board() : this(Array.Empty<Piece>()) { }
+    public Board(Rectangle size) : this(size, Array.Empty<Piece>()) { }
 
-    private Board(Piece[] fixedPieces) => mFixedPieces = fixedPieces;
+    private Board(Rectangle size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
 
     public Piece? MovingPiece { get; init; }
+
+    public Rectangle Size { get; }
 
     public IReadOnlyCollection<Piece> FixedPieces => mFixedPieces;
 
@@ -18,5 +20,5 @@ public sealed class Board
 
     public Piece? PieceAt(Point position) => AllPieces.FirstOrDefault(p => p.Contains(position));
 
-    public Board WithMovingPiece(Piece? piece) => new(mFixedPieces) { MovingPiece = piece };
+    public Board WithMovingPiece(Piece? piece) => new(Size, mFixedPieces) { MovingPiece = piece };
 }
