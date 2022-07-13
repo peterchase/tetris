@@ -43,7 +43,7 @@ public sealed class Piece
     {
         int xOffset = Position.X - other.Position.X;
         int yOffset = Position.Y - other.Position.Y;
-        return Shape.Intersects(other.Shape.Offset(xOffset, yOffset));
+        return Shape.Offset(xOffset, yOffset).Intersects(other.Shape);
     }
 
     public Piece MoveTo(Point position) => new(Shape, position, Rotation);

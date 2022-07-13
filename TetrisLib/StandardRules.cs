@@ -4,9 +4,12 @@ using System.Drawing;
 
 public sealed class StandardRules : IRules
 {
-    public static IRules Instance { get; } = new StandardRules();
+    private readonly Shape[] mAllShapes;
+    private readonly Random mRandom = new();
 
-    private StandardRules() { }
+    public StandardRules(params Shape[] allShapes) => mAllShapes = allShapes;
+
+    public StandardRules(IEnumerable<Shape> allShapes) : this(allShapes.ToArray()) { }
 
     public Board VisitPlayerMove(PlayerMovePlayEvent playEvent, Board prevBoard, Game game)
     {
@@ -35,7 +38,7 @@ public sealed class StandardRules : IRules
         if (prevBoard.FixedPieces.Any(movedDownPiece.Intersects)
             || movedDownPiece.Boundary.Bottom == prevBoard.Size.Height - 1)
         {
-            Piece newMovingPiece = CreateNewMovingPiece();
+            Piece newMovingPiece = CreateNewMovingPiece(prevBoard);
             return prevBoard.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
         }
 
@@ -44,10 +47,12 @@ public sealed class StandardRules : IRules
         return prevBoard.WithMovingPiece(movedDownPiece);
     }
 
-    private static Piece CreateNewMovingPiece()
+    private Piece CreateNewMovingPiece(Board board)
     {
-        // TODO: randomise x-position and shape
-        return new Piece(StandardShapes.L42, new Point(0, 0));
+        Shape shape = mAllShapes[mRandom.Next(mAllShapes.Length)];
+        int xRange = board.Size.Width - shape.Size.Width;
+        int x = mRandom.Next(xRange);
+        return new Piece(shape, new Point(x, 0));
     }
 
     public bool Finished(Board board, Game game)

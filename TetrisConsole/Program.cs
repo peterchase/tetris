@@ -21,7 +21,7 @@ internal class Program
         var initialMovingPiece = new Piece(StandardShapes.L42, new Point(2, 0));
 
         var initialBoard = new Board(new Size(40, 25)) { MovingPiece = initialMovingPiece };
-        var game = new Game(timerCounts, playerMoves, initialBoard, StandardRules.Instance);
+        var game = new Game(timerCounts, playerMoves, initialBoard, new StandardRules(StandardShapes.All));
 
         await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString()));
     }
