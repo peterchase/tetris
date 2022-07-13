@@ -2,9 +2,9 @@ namespace TetrisLib;
 
 using System.Drawing;
 
-public sealed class StandardRules : IPlayEventVisitor<Board, Board, Game>
+public sealed class StandardRules : IRules
 {
-    public static IPlayEventVisitor<Board, Board, Game> Instance { get; } = new StandardRules();
+    public static IRules Instance { get; } = new StandardRules();
 
     private StandardRules() { }
 
@@ -15,9 +15,9 @@ public sealed class StandardRules : IPlayEventVisitor<Board, Board, Game>
             return prevBoard;
         }
 
-        // TODO: checks and other kinds of move, also nicer way to apply movement
+        // TODO: support rotation
         var prevPiece = prevBoard.MovingPiece;
-        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y + playEvent.Movement.Down));
+        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y));
         newPiece = newPiece.ContainedBy(prevBoard.Size) ? newPiece : prevPiece;
         return prevBoard.WithMovingPiece(newPiece);
     }
@@ -29,6 +29,23 @@ public sealed class StandardRules : IPlayEventVisitor<Board, Board, Game>
             return prevBoard;
         }
 
-        return prevBoard; // TODO
+        var prevPiece = prevBoard.MovingPiece;
+        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X, prevPiece.Position.Y + 1));
+
+        // TODO: detect collision with fixed piece. If so, change moving piece to fixed piece and add new fixed piece
+        // TODO: detect full row(s) at bottom. If so, move fixed pieces down and remove any wholly outside board.
+
+        return prevBoard.WithMovingPiece(newPiece);
+    }
+
+    public bool Finished(Board board, Game game)
+    {
+        if (board.MovingPiece is null)
+        {
+            return false;
+        }
+
+        // TODO: detect collision with fixed piece when moving piece is at top
+        return false;
     }
 }
