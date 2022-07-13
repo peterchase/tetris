@@ -2,15 +2,14 @@ namespace TetrisLib;
 
 using System.Drawing;
 
-public sealed class StandardRules : IPlayEventVisitor<Board, (Board, Game)>
+public sealed class StandardRules : IPlayEventVisitor<Board, Board, Game>
 {
-    public static IPlayEventVisitor<Board, (Board, Game)> Instance { get; } = new StandardRules();
+    public static IPlayEventVisitor<Board, Board, Game> Instance { get; } = new StandardRules();
 
     private StandardRules() { }
 
-    public Board VisitPlayerMove(PlayerMovePlayEvent playEvent, (Board, Game) arg)
+    public Board VisitPlayerMove(PlayerMovePlayEvent playEvent, Board prevBoard, Game game)
     {
-        var (prevBoard, _) = arg;
         if (prevBoard.MovingPiece is null)
         {
             return prevBoard;
@@ -22,9 +21,8 @@ public sealed class StandardRules : IPlayEventVisitor<Board, (Board, Game)>
         return prevBoard.WithMovingPiece(newPiece);
     }
 
-    public Board VisitTimerCount(TimerCountPlayEvent playEvent, (Board, Game) arg)
+    public Board VisitTimerCount(TimerCountPlayEvent playEvent, Board prevBoard, Game game)
     {
-        var (prevBoard, _) = arg;
         if (prevBoard.MovingPiece is null)
         {
             return prevBoard;

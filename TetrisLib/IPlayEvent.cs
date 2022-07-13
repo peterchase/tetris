@@ -2,12 +2,5 @@ namespace TetrisLib;
 
 public interface IPlayEvent
 {
-    TR Accept<TR, TA>(IPlayEventVisitor<TR, TA> visitor, TA arg);
-}
-
-public interface IPlayEventVisitor<TR, TA>
-{
-    TR VisitTimerCount(TimerCountPlayEvent playEvent, TA arg);
-
-    TR VisitPlayerMove(PlayerMovePlayEvent playEvent, TA arg);
+    TR Accept<TR, TA1, TA2>(IPlayEventVisitor<TR, TA1, TA2> visitor, TA1 arg1, TA2 arg2);
 }
