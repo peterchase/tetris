@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Text;
 using TetrisLib;
 
 internal class Program
@@ -23,6 +24,7 @@ internal class Program
         var initialBoard = new Board(new Size(40, 25)) { MovingPiece = initialMovingPiece };
         var game = new Game(timerCounts, playerMoves, initialBoard, new StandardRules(StandardShapes.All));
 
-        await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString()));
+        var builder = new StringBuilder();
+        await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString(builder)));
     }
 }

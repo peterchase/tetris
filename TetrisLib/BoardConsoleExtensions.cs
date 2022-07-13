@@ -31,8 +31,7 @@ public static class BoardConsoleExtensions
     public static string ToConsoleString(this Board board, StringBuilder? builder = null)
     {
         builder ??= new StringBuilder();
-
-        builder.Append(cHome);
+        builder.Clear().Append(cHome);
 
         for (int y = 0; y < board.Size.Height; ++y)
         {
