@@ -39,6 +39,13 @@ public sealed class Piece
         return fitWithin.Contains(Boundary);
     }
 
+    public bool Intersects(Piece other)
+    {
+        int xOffset = Position.X - other.Position.X;
+        int yOffset = Position.Y - other.Position.Y;
+        return Shape.Intersects(other.Shape.Offset(xOffset, yOffset));
+    }
+
     public Piece MoveTo(Point position) => new(Shape, position, Rotation);
 
     public Piece RotateClockwise() => new(Shape, Position, (Rotation + 1) % 4);

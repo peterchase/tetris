@@ -8,18 +8,15 @@ public sealed class Shape
 
     private readonly Rectangle[] mRects;
 
-    public Shape(params Rectangle[] rects)
+    private Shape(Rectangle[] rects, int kind)
     {
         Rectangle boundaryRect = rects.Aggregate((tot, cur) => cur.Union(tot));
-        if (boundaryRect.Location != new Point(0, 0))
-        {
-            throw new ArgumentException("Rectangles must result in a top left location of (0, 0)", nameof(rects));
-        }
-
         mRects = rects;
         Size = boundaryRect.Size;
-        Kind = Interlocked.Increment(ref sKindSerial);
+        Kind = kind;
     }
+
+    public Shape(params Rectangle[] rects) : this(rects, Interlocked.Increment(ref sKindSerial)) { }
 
     public Shape(IEnumerable<Rectangle> rects) : this(rects.ToArray()) { }
 
@@ -28,4 +25,16 @@ public sealed class Shape
     public int Kind { get; }
 
     public bool Contains(Point point) => mRects.Any(r => r.Contains(point));
+
+    public bool Intersects(Shape other) => mRects.Any(r => other.mRects.Any(or => r.IntersectsWith(or)));
+
+    public Shape Offset(int xOffset, int yOffset)
+    {
+        Rectangle[] rects = mRects.Select(r =>
+                    {
+                        r.Offset(xOffset, yOffset);
+                        return r;
+                    }).ToArray();
+        return new Shape(rects, Kind);
+    }
 }

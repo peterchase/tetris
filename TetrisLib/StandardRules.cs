@@ -29,13 +29,25 @@ public sealed class StandardRules : IRules
             return prevBoard;
         }
 
-        var prevPiece = prevBoard.MovingPiece;
-        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X, prevPiece.Position.Y + 1));
+        Piece prevPiece = prevBoard.MovingPiece;
+        Piece movedDownPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X, prevPiece.Position.Y + 1));
 
-        // TODO: detect collision with fixed piece. If so, change moving piece to fixed piece and add new fixed piece
+        if (prevBoard.FixedPieces.Any(movedDownPiece.Intersects)
+            || movedDownPiece.Boundary.Bottom == prevBoard.Size.Height - 1)
+        {
+            Piece newMovingPiece = CreateNewMovingPiece();
+            return prevBoard.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
+        }
+
         // TODO: detect full row(s) at bottom. If so, move fixed pieces down and remove any wholly outside board.
 
-        return prevBoard.WithMovingPiece(newPiece);
+        return prevBoard.WithMovingPiece(movedDownPiece);
+    }
+
+    private static Piece CreateNewMovingPiece()
+    {
+        // TODO: randomise x-position and shape
+        return new Piece(StandardShapes.L42, new Point(0, 0));
     }
 
     public bool Finished(Board board, Game game)

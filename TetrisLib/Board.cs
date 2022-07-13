@@ -21,4 +21,6 @@ public sealed class Board
     public Piece? PieceAt(Point position) => AllPieces.FirstOrDefault(p => p.Contains(position));
 
     public Board WithMovingPiece(Piece? piece) => new(Size, mFixedPieces) { MovingPiece = piece };
+
+    public Board WithMovingPieceFixed() => new(Size, mFixedPieces.Concat(MovingPiece.AsEnumerable()).ToArray());
 }
