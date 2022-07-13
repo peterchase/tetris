@@ -75,13 +75,7 @@ public sealed class StandardRules : IRules
 
     public bool Finished(Board board, Game game)
     {
-        if (board.MovingPiece is null)
-        {
-            return false;
-        }
-
-        // TODO: detect collision with fixed piece when moving piece is at top
-        return false;
+        return board.MovingPiece != null && board.MovingPiece.Position.Y == 0 && Collision(board, board.MovingPiece);
     }
 
     private Piece CreateNewMovingPiece(Board board)
