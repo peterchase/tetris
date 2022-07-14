@@ -37,8 +37,13 @@ public sealed class StandardRules : IRules
 
         if (Collision(prevBoard, movedDownPiece))
         {
-            Piece newMovingPiece = CreateNewMovingPiece(prevBoard);
-            return prevBoard.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
+            Board board = prevBoard.WithMovingPieceFixed();
+            while (board.IsFullAcrossWidth(board.Size.Height - 1))
+            {
+                board = board.MoveFixedPiecesDown();
+            }
+
+            return board.WithMovingPiece(CreateNewMovingPiece(board.Size));
         }
 
         // TODO: detect full row(s) at bottom. If so, move fixed pieces down and remove any wholly outside board.
@@ -49,7 +54,7 @@ public sealed class StandardRules : IRules
     private static bool Collision(Board prevBoard, Piece piece)
     {
         return prevBoard.FixedPieces.Any(piece.Intersects)
-                    || piece.Boundary.Bottom == prevBoard.Size.Height - 1;
+                    || piece.Boundary.Bottom == prevBoard.Size.Height;
     }
 
     public Board VisitDrop(DropPlayEvent playEvent, Board prevBoard, Game game)
@@ -64,7 +69,7 @@ public sealed class StandardRules : IRules
             var movedDownPiece = piece.MoveTo(new Point(piece.Position.X, piece.Position.Y + 1));
             if (Collision(prevBoard, movedDownPiece))
             {
-                Piece newMovingPiece = CreateNewMovingPiece(prevBoard);
+                Piece newMovingPiece = CreateNewMovingPiece(prevBoard.Size);
                 Board boardWithDroppedPiece = prevBoard.WithMovingPiece(piece);
                 return boardWithDroppedPiece.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
             }
@@ -78,10 +83,10 @@ public sealed class StandardRules : IRules
         return board.MovingPiece != null && board.MovingPiece.Position.Y == 0 && Collision(board, board.MovingPiece);
     }
 
-    private Piece CreateNewMovingPiece(Board board)
+    private Piece CreateNewMovingPiece(Size boardSize)
     {
         Shape shape = mAllShapes[mRandom.Next(mAllShapes.Length)];
-        int xRange = board.Size.Width - shape.Size.Width;
+        int xRange = boardSize.Width - shape.Size.Width;
         int x = mRandom.Next(xRange);
         return new Piece(shape, new Point(x, 0));
     }
