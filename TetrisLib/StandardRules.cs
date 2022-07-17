@@ -37,24 +37,10 @@ public sealed class StandardRules : IRules
 
         if (Collision(prevBoard, movedDownPiece))
         {
-            Board board = prevBoard.WithMovingPieceFixed();
-            while (board.IsFullAcrossWidth(board.Size.Height - 1))
-            {
-                board = board.MoveFixedPiecesDown();
-            }
-
-            return board.WithMovingPiece(CreateNewMovingPiece(board.Size));
+            return GetCollisionResult(prevBoard, movedDownPiece);
         }
 
-        // TODO: detect full row(s) at bottom. If so, move fixed pieces down and remove any wholly outside board.
-
         return prevBoard.WithMovingPiece(movedDownPiece);
-    }
-
-    private static bool Collision(Board prevBoard, Piece piece)
-    {
-        return prevBoard.FixedPieces.Any(piece.Intersects)
-                    || piece.Boundary.Bottom == prevBoard.Size.Height;
     }
 
     public Board VisitDrop(DropPlayEvent playEvent, Board prevBoard, Game game)
@@ -69,9 +55,7 @@ public sealed class StandardRules : IRules
             var movedDownPiece = piece.MoveTo(new Point(piece.Position.X, piece.Position.Y + 1));
             if (Collision(prevBoard, movedDownPiece))
             {
-                Piece newMovingPiece = CreateNewMovingPiece(prevBoard.Size);
-                Board boardWithDroppedPiece = prevBoard.WithMovingPiece(piece);
-                return boardWithDroppedPiece.WithMovingPieceFixed().WithMovingPiece(newMovingPiece);
+                return GetCollisionResult(prevBoard.WithMovingPiece(piece), movedDownPiece);
             }
 
             piece = movedDownPiece;
@@ -81,6 +65,24 @@ public sealed class StandardRules : IRules
     public bool Finished(Board board, Game game)
     {
         return board.MovingPiece != null && board.MovingPiece.Position.Y == 0 && Collision(board, board.MovingPiece);
+    }
+
+    // Is the piece intersecting a fixed piece or off the bottom of the board?
+    private static bool Collision(Board prevBoard, Piece piece)
+    {
+        return prevBoard.FixedPieces.Any(piece.Intersects)
+                    || piece.Boundary.Bottom == prevBoard.Size.Height + 1;
+    }
+
+    private Board GetCollisionResult(Board prevBoard, Piece movedDownPiece)
+    {
+        Board board = prevBoard.WithMovingPieceFixed();
+        while (board.IsFullAcrossWidth(board.Size.Height - 1))
+        {
+            board = board.MoveFixedPiecesDown();
+        }
+
+        return board.WithMovingPiece(CreateNewMovingPiece(board.Size));
     }
 
     private Piece CreateNewMovingPiece(Size boardSize)

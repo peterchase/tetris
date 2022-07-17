@@ -1,4 +1,4 @@
-﻿
+
 using System.Drawing;
 using System.Reactive;
 using System.Reactive.Linq;
@@ -10,7 +10,7 @@ internal class Program
 {
     private const double cInitialDelayMillis = 500.0, cMinDelayMillis = 25.0;
     private const double cDelayReductionFactor = 0.995;
-    private const int cBoardWidth = 20, cBoardHeight = 20;
+    private const int cBoardWidth = 21, cBoardHeight = 15;
 
     private static async Task Main(string[] args)
     {

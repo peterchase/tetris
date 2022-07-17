@@ -8,7 +8,7 @@ public sealed class Board
 
     public Board(Size size) : this(size, Array.Empty<Piece>()) { }
 
-    private Board(Size size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
+    internal Board(Size size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
 
     public Piece? MovingPiece { get; init; }
 

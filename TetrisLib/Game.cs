@@ -4,6 +4,9 @@ namespace TetrisLib;
 
 public sealed class Game
 {
+    public static Game Static(Board board, IRules rules)
+     => new Game(Observable.Empty<long>(), Observable.Empty<IPlayEvent>(), board, rules);
+
     public Game(IObservable<long> timerCounts, IObservable<IPlayEvent> playerMoves, Board initialBoard, IRules rules)
     {
         Boards = timerCounts
