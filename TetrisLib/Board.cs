@@ -51,16 +51,9 @@ public sealed class Board
 
     private static void WritePieceKinds(int?[][] kinds, Piece piece)
     {
-        for (int y = piece.Boundary.Y; y < piece.Boundary.Bottom; ++y)
+        foreach (Point p in piece.Points)
         {
-            int?[] row = kinds[y];
-            for (int x = piece.Boundary.X; x < piece.Boundary.Right; ++x)
-            {
-                if (piece.Contains(new Point(x, y)))
-                {
-                    row[x] = piece.Kind;
-                }
-            }
+            kinds[p.Y][p.X] = piece.Kind;
         }
     }
 }
