@@ -33,18 +33,21 @@ public sealed class Shape
             throw new ArgumentException("Negative rotation not supported", nameof(rotation));
         }
 
-        switch (rotation % 4)
+        rotation = rotation % 4;
+        if (rotation == 0)
         {
-            case 0:
-                return this;
-            case 1:
-                throw new NotImplementedException();
-            case 2:
-                throw new NotImplementedException();
-            case 3:
-                throw new NotImplementedException();
-            default:
-                throw new InvalidOperationException("Should be impossible");
+            return this;
         }
+
+        Rectangle[] rawRotated = mRects.Select(r => r.RotateClockwise(rotation)).ToArray();
+        int xMin = rawRotated.Min(r => r.X);
+        int yMin = rawRotated.Min(r => r.Y);
+
+        Rectangle[] rects = rawRotated.Select(r => 
+        {
+            r.Offset(-xMin, -yMin);
+            return r;
+        }).ToArray();
+        return new(rects, Kind);
     }
 }
