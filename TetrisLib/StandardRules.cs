@@ -80,13 +80,7 @@ public sealed class StandardRules : IRules
 
     private Board GetCollisionResult(Board prevBoard, Piece movedDownPiece)
     {
-        Board board = prevBoard.WithMovingPieceFixed();
-        //while (board.IsFullAcrossWidth(board.Size.Height - 1))
-       // {
-        //    board = board.MoveFixedPiecesDown();
-        //}
-
-        return board.WithMovingPiece(CreateNewMovingPiece(board.Size));
+        return prevBoard.WithMovingPieceFixed().WithFullRowsRemoved().WithMovingPiece(CreateNewMovingPiece(prevBoard.Size));
     }
 
     private Piece CreateNewMovingPiece(Size boardSize)

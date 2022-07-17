@@ -14,11 +14,11 @@ public static class StandardShapes
     {
         get
         {
-            yield return L42;
-            yield return Offset32;
+         //   yield return L42;
+          //  yield return Offset32;
             yield return Square32;
-            yield return U23;
-            yield return T23;
+          //  yield return U23;
+           // yield return T23;
         }
     }
 }

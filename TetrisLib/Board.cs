@@ -36,7 +36,32 @@ public sealed class Board
         return new(Size, newKinds);
     }
 
-    public bool IsFullAcrossWidth(int y) => mFixedPieceKinds[y].All(k => k.HasValue);
+    public Board WithFullRowsRemoved()
+    {
+        int?[][]? newKinds = null;
+        for (int y = Size.Height - 1; y > 0;)
+        {
+            if (!(newKinds ?? mFixedPieceKinds)[y].All(k => k.HasValue))
+            {
+                --y;
+                continue; // row is not full
+            }
+
+            if (newKinds is null)
+            {
+                newKinds = (int?[][])mFixedPieceKinds.Clone();
+            }
+
+            for (int yy = y; yy > 0; --yy)
+            {
+                newKinds[yy] = newKinds[yy - 1];
+            }
+
+            newKinds[0] = new int?[Size.Width];
+        }
+
+        return newKinds is null ? this : new Board(Size, newKinds);
+    }
 
     private static int?[][] GetFixedPieceKinds(Size size, Piece[] fixedPieces)
     {
@@ -56,4 +81,5 @@ public sealed class Board
             kinds[p.Y][p.X] = piece.Kind;
         }
     }
+
 }
