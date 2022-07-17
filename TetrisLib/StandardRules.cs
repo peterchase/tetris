@@ -18,11 +18,13 @@ public sealed class StandardRules : IRules
             return prevBoard;
         }
 
-        // TODO: support rotation
-        var prevPiece = prevBoard.MovingPiece;
-        var newPiece = prevPiece.MoveTo(new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y));
-        newPiece = newPiece.ContainedBy(prevBoard.Size) ? newPiece : prevPiece;
-        return prevBoard.WithMovingPiece(newPiece);
+        Piece prevPiece = prevBoard.MovingPiece;
+
+        Piece newPiece = prevPiece
+            .MoveTo(new Point(prevPiece.Position.X + playEvent.Movement.Right, prevPiece.Position.Y))
+            .RotateClockwise(playEvent.Movement.RotateClockwise);
+
+        return newPiece.ContainedBy(prevBoard.Size) ? prevBoard.WithMovingPiece(newPiece) : prevBoard;
     }
 
     public Board VisitTimerCount(TimerCountPlayEvent playEvent, Board prevBoard, Game game)

@@ -61,7 +61,13 @@ public sealed class Piece
 
     public Piece MoveTo(Point position) => new(Shape, position, Rotation);
 
-    public Piece RotateClockwise() => new(Shape, Position, (Rotation + 1) % 4);
+    public Piece RotateClockwise(int rotation)
+    {
+        if (rotation < -4)
+        {
+            throw new ArgumentException($"Unsupported rotation {rotation}", nameof(rotation));
+        }
 
-    public Piece RotateCounterClockwise() => new (Shape, Position, Rotation == 0 ? 3 : Rotation - 1);
+        return new(Shape, Position, (Rotation + rotation + 4) % 4);
+    }
 }
