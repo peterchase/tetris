@@ -26,15 +26,5 @@ public sealed class Shape
 
     public bool Contains(Point point) => mRects.Any(r => r.Contains(point));
 
-    public bool Intersects(Shape other) => mRects.Any(r => other.mRects.Any(or => r.IntersectsWith(or)));
-
-    public Shape Offset(int xOffset, int yOffset)
-    {
-        Rectangle[] rects = mRects.Select(r =>
-                    {
-                        r.Offset(xOffset, yOffset);
-                        return r;
-                    }).ToArray();
-        return new Shape(rects, Kind);
-    }
+    public Shape Rotated(int rotation) => this; // TODO: respect rotation
 }

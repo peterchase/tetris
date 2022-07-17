@@ -9,24 +9,25 @@ public sealed class Piece
 
     private Piece(Shape shape, Point position, int rotation)
     {
-        Shape = shape;
+        UnrotatedShape = shape;
         Position = position;
         Rotation = rotation;
     }
 
     public Point Position { get; }
 
-    public Shape Shape { get; }
+    public Shape UnrotatedShape { get; }
+
+    public Shape Shape => UnrotatedShape.Rotated(Rotation);
 
     public int Rotation { get; }
 
-    public int Kind => Shape.Kind;
+    public int Kind => UnrotatedShape.Kind;
 
     public Rectangle Boundary => new(Position, Shape.Size);
 
     public bool Contains(Point point)
     {
-        // TODO: respect rotation
         point.Offset(-Position.X, -Position.Y);
         return Shape.Contains(point);
     }
@@ -34,8 +35,6 @@ public sealed class Piece
     public bool ContainedBy(Size size)
     {
         var fitWithin = new Rectangle(new Point(0, 0), size);
-
-        // TODO: respect rotation
         return fitWithin.Contains(Boundary);
     }
 
@@ -43,13 +42,14 @@ public sealed class Piece
     {
         get
         {
-            for (int y = 0; y < Shape.Size.Height; ++y)
+            Shape rotatedShape = Shape; // don't repeatedly calculate this
+
+            for (int y = 0; y < rotatedShape.Size.Height; ++y)
             {
-                for (int x = 0; x < Shape.Size.Width; ++x)
+                for (int x = 0; x < rotatedShape.Size.Width; ++x)
                 {
-                    // TODO: respect rotation
                     Point point = new Point(x, y);
-                    if (Shape.Contains(point))
+                    if (rotatedShape.Contains(point))
                     {
                         point.Offset(Position);
                         yield return point;
