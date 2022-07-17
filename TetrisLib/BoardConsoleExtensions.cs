@@ -37,7 +37,7 @@ public static class BoardConsoleExtensions
         {
             for (int x = 0; x < board.Size.Width; ++x)
             {
-                int? kind = board.PieceAt(new Point(x, y))?.Kind;
+                int? kind = board.KindAt(new Point(x, y));
                 if (kind.HasValue)
                 {
                     builder.Append(ColourCode(kind.Value));

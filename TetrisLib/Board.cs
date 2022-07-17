@@ -18,7 +18,7 @@ public sealed class Board
 
     public IEnumerable<Piece> AllPieces => MovingPiece.AsEnumerable().Concat(FixedPieces);
 
-    public Piece? PieceAt(Point position) => AllPieces.FirstOrDefault(p => p.Contains(position));
+    public int? KindAt(Point position) => AllPieces.FirstOrDefault(p => p.Contains(position))?.Kind;
 
     public Board WithMovingPiece(Piece? piece) => new(Size, mFixedPieces) { MovingPiece = piece };
 
