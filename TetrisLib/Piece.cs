@@ -39,11 +39,24 @@ public sealed class Piece
         return fitWithin.Contains(Boundary);
     }
 
-    public bool Intersects(Piece other)
+    public IEnumerable<Point> Points
     {
-        int xOffset = Position.X - other.Position.X;
-        int yOffset = Position.Y - other.Position.Y;
-        return Shape.Offset(xOffset, yOffset).Intersects(other.Shape);
+        get
+        {
+            for (int y = 0; y < Shape.Size.Height; ++y)
+            {
+                for (int x = 0; x < Shape.Size.Width; ++x)
+                {
+                    // TODO: respect rotation
+                    Point point = new Point(x, y);
+                    if (Shape.Contains(point))
+                    {
+                        point.Offset(Position);
+                        yield return point;
+                    }
+                }
+            }
+        }
     }
 
     public Piece MoveTo(Point position) => new(Shape, position, Rotation);
