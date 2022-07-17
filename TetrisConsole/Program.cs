@@ -9,7 +9,7 @@ using TetrisLib;
 internal class Program
 {
     private const double cInitialDelayMillis = 500.0, cMinDelayMillis = 25.0;
-    private const double cDelayReductionFactor = 0.999;
+    private const double cDelayReductionFactor = 0.9998;
     private const int cBoardWidth = 21, cBoardHeight = 20;
 
     private static async Task Main(string[] args)

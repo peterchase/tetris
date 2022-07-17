@@ -22,6 +22,11 @@ internal static class RectangleExtensions
 
     public static Rectangle RotateClockwise(this Rectangle rect, int rotation)
     {
+        if (rotation < 0 || rotation >= sRotationMatrices.Length)
+        {
+            throw new ArgumentException($"Unsupported rotation {rotation}", nameof(rotation));
+        }
+
         int[][]? rotationMatrix = sRotationMatrices[rotation];
         if (rotationMatrix is null)
         {
@@ -30,17 +35,7 @@ internal static class RectangleExtensions
 
         int[][] orig = new[] { new[] { rect.X, rect.Right }, new[] { rect.Y, rect.Bottom } };
 
-        int[][] rotated = new[] { new int[2], new int[2] };
-        for (int i = 0; i < 2; ++i)
-        {
-            for (int j = 0; j < 2; ++j)
-            {
-                for (int k = 0; k < 2; ++k)
-                {
-                    rotated[i][j] += rotationMatrix[i][k] * orig[k][j];
-                }
-            }
-        }
+        int[][] rotated = rotationMatrix.MatrixMultiply2x2(orig);
 
         return new Rectangle(
             Math.Min(rotated[0][0], rotated[0][1]),
