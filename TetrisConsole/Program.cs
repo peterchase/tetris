@@ -31,7 +31,20 @@ internal class Program
         var game = new Game(timerCounts, playerMoves, initialBoard, new StandardRules(StandardShapes.All));
 
         var builder = new StringBuilder();
-        await game.Boards.ForEachAsync(async b => await Console.Out.WriteAsync(b.ToConsoleString(builder)));
+        await game.Boards.ForEachAsync(async b => await DisplayBoard(b, builder));
+    }
+
+    private static async Task DisplayBoard(Board b, StringBuilder builder)
+    {
+        Console.CursorVisible = false;
+        try
+        {
+            await Console.Out.WriteAsync(b.ToConsoleString(builder));
+        }
+        finally
+        {
+            Console.CursorVisible = true;
+        }
     }
 
     private static double GetFaster(double prevDelay) => Math.Max(cMinDelayMillis, prevDelay * cDelayReductionFactor);
