@@ -4,39 +4,63 @@ namespace TetrisLib;
 
 public sealed class Board
 {
-    private readonly Piece[] mFixedPieces;
+    private readonly int?[][] mFixedPieceKinds;
 
     public Board(Size size) : this(size, Array.Empty<Piece>()) { }
 
-    internal Board(Size size, Piece[] fixedPieces) => (mFixedPieces, Size) = (fixedPieces, size);
+    internal Board(Size size, params Piece[] fixedPieces): this(size, GetFixedPieceKinds(size, fixedPieces)) { }
+
+    private Board(Size size, int?[][] fixedPieceKinds) => (mFixedPieceKinds, Size) = (fixedPieceKinds, size);
 
     public Piece? MovingPiece { get; init; }
 
     public Size Size { get; }
 
-    public IReadOnlyCollection<Piece> FixedPieces => mFixedPieces;
+    public int? KindAt(Point position) => (MovingPiece?.Contains(position) == true)
+        ? MovingPiece.Kind
+        : FixedPieceKindAt(position);
 
-    public IEnumerable<Piece> AllPieces => MovingPiece.AsEnumerable().Concat(FixedPieces);
+    public int? FixedPieceKindAt(Point position) => mFixedPieceKinds[position.Y][position.X];
 
-    public int? KindAt(Point position) => AllPieces.FirstOrDefault(p => p.Contains(position))?.Kind;
+    public Board WithMovingPiece(Piece? piece) => new(Size, mFixedPieceKinds) { MovingPiece = piece };
 
-    public Board WithMovingPiece(Piece? piece) => new(Size, mFixedPieces) { MovingPiece = piece };
-
-    public Board WithMovingPieceFixed() => new(Size, mFixedPieces.Concat(MovingPiece.AsEnumerable()).ToArray());
-
-    public bool IsFullAcrossWidth(int y)
+    public Board WithMovingPieceFixed()
     {
-        return Enumerable.Range(0, Size.Width)
-            .Select(x => new Point(x, y))
-            .All(point => FixedPieces.Any(piece => piece.Contains(point)));
+        if (MovingPiece is null)
+        {
+            return this;
+        }
+
+        var newKinds = mFixedPieceKinds.Select(a => (int?[])a.Clone()).ToArray();
+        WritePieceKinds(newKinds, MovingPiece);
+        return new(Size, newKinds);
     }
 
-    public Board MoveFixedPiecesDown()
+    public bool IsFullAcrossWidth(int y) => mFixedPieceKinds[y].All(k => k.HasValue);
+
+    private static int?[][] GetFixedPieceKinds(Size size, Piece[] fixedPieces)
     {
-        var newFixedPieces = FixedPieces
-            .Select(p => p.MoveTo(new Point(p.Position.X, p.Position.Y + 1)))
-            .Where(p => p.Position.Y < Size.Height)
-            .ToArray();
-        return new Board(Size, newFixedPieces) { MovingPiece = MovingPiece };
+        var newKinds = Enumerable.Range(0, size.Height).Select(y => new int?[size.Width]).ToArray();
+        foreach (Piece piece in fixedPieces)
+        {
+            WritePieceKinds(newKinds, piece);
+        }
+
+        return newKinds;
+    }
+
+    private static void WritePieceKinds(int?[][] kinds, Piece piece)
+    {
+        for (int y = piece.Boundary.Y; y < piece.Boundary.Bottom; ++y)
+        {
+            int?[] row = kinds[y];
+            for (int x = piece.Boundary.X; x < piece.Boundary.Right; ++x)
+            {
+                if (piece.Contains(new Point(x, y)))
+                {
+                    row[x] = piece.Kind;
+                }
+            }
+        }
     }
 }

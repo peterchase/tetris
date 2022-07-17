@@ -70,17 +70,18 @@ public sealed class StandardRules : IRules
     // Is the piece intersecting a fixed piece or off the bottom of the board?
     private static bool Collision(Board prevBoard, Piece piece)
     {
-        return prevBoard.FixedPieces.Any(piece.Intersects)
-                    || piece.Boundary.Bottom == prevBoard.Size.Height + 1;
+        return false;
+    //    return prevBoard.FixedPieces.Any(piece.Intersects)
+      //              || piece.Boundary.Bottom == prevBoard.Size.Height + 1;
     }
 
     private Board GetCollisionResult(Board prevBoard, Piece movedDownPiece)
     {
         Board board = prevBoard.WithMovingPieceFixed();
-        while (board.IsFullAcrossWidth(board.Size.Height - 1))
-        {
-            board = board.MoveFixedPiecesDown();
-        }
+        //while (board.IsFullAcrossWidth(board.Size.Height - 1))
+       // {
+        //    board = board.MoveFixedPiecesDown();
+        //}
 
         return board.WithMovingPiece(CreateNewMovingPiece(board.Size));
     }
