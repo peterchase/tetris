@@ -9,3 +9,5 @@ If you do want to try: -
 * Up/Down - rotate the piece clockwise/anticlockwise
 * D - drop the piece from its current position
 * Q - end the game
+
+**Note** you need ANSI console support. If you don't have it, to turn it on, Registry Editor HKCU\Console add DWORD VirtualTerminalLevel value 1.
