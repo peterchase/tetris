@@ -5,7 +5,7 @@ but haven't put effort into the playability - it's a learning exercise, not some
 
 If you do want to try: -
 
-Left/Right - move the piece left/right
-Up/Down - rotate the piece clockwise/anticlockwise
-D - drop the piece from its current position
-Q - end the game
+* Left/Right - move the piece left/right
+* Up/Down - rotate the piece clockwise/anticlockwise
+* D - drop the piece from its current position
+* Q - end the game
