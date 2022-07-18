@@ -10,7 +10,8 @@ internal class Program
 {
     private const double cInitialDelayMillis = 500.0, cMinDelayMillis = 25.0;
     private const double cDelayReductionFactor = 0.9998;
-    private const int cBoardWidth = 21, cBoardHeight = 20;
+    private const int cBoardWidth = 21, cBoardHeight = 19;
+    private const int cScaleWidth = 3, cScaleHeight = 2;
 
     private static async Task Main(string[] args)
     {
@@ -36,10 +37,11 @@ internal class Program
 
     private static async Task DisplayBoard(Board b, StringBuilder builder)
     {
+        Size scale = new Size(cScaleWidth, cScaleHeight);
         Console.CursorVisible = false;
         try
         {
-            await Console.Out.WriteAsync(b.ToConsoleString(builder));
+            await Console.Out.WriteAsync(b.ToConsoleString(scale, builder));
         }
         finally
         {

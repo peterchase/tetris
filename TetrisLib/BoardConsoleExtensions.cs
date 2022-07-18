@@ -28,28 +28,34 @@ public static class BoardConsoleExtensions
 
     internal static string ColourCode(int n) => $"\u001b[{sColours[n % sColours.Count]}m";
 
-    public static string ToConsoleString(this Board board, StringBuilder? builder = null)
+    public static string ToConsoleString(this Board board, Size scale, StringBuilder? builder = null)
     {
         builder ??= new StringBuilder();
         builder.Clear().Append(cHome);
 
         for (int y = 0; y < board.Size.Height; ++y)
         {
-            for (int x = 0; x < board.Size.Width; ++x)
+            for (int ys = 0; ys < scale.Height; ++ys)
             {
-                int? kind = board.KindAt(new Point(x, y));
-                if (kind.HasValue)
+                for (int x = 0; x < board.Size.Width; ++x)
                 {
-                    builder.Append(ColourCode(kind.Value));
-                    builder.Append('█');
+                    int? kind = board.KindAt(new Point(x, y));
+                    for (int xs = 0; xs < scale.Width; ++xs)
+                    {
+                        if (kind.HasValue)
+                        {
+                            builder.Append(ColourCode(kind.Value));
+                            builder.Append('█');
+                        }
+                        else
+                        {
+                            builder.Append(' ');
+                        }
+                    }
                 }
-                else
-                {
-                    builder.Append(' ');
-                }
-            }
 
-            builder.Append(Environment.NewLine);
+                builder.Append(Environment.NewLine);
+            }
         }
 
         builder.Append(cDefaultColour);
