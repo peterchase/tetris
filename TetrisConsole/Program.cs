@@ -21,7 +21,7 @@ internal class Program
 
         var timerCounts = Observable
             .Generate(cInitialDelayMillis, _ => true, GetFaster, d => (long)d, d => TimeSpan.FromMilliseconds(d))
-            .TakeUntil(playerMoves.LastAsync());
+            .TakeUntil(playerMoves.LastOrDefaultAsync());
 
         var initialMovingPiece = new Piece(StandardShapes.L42, new Point(2, 0));
 
